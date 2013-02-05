@@ -1,4 +1,4 @@
-;;; avra-flymake.el --- flymake minor mode for AVRA assembler (an Atmel AVR assembler)
+;;; avr-asm-flymake.el --- flymake minor mode for AVR assembler (Atmel AVR assembler)
 
 ;; Copyright (C) 2013  Matthew Kennedy
 
@@ -26,18 +26,24 @@
 
 (require 'flymake)
 
-(defvar avra-flymake-command "avra")
+(defvar avr-asm-flymake-command
+  (if (eq window-system 'w32)
+      "C:/Program Files (x86)/Atmel/Atmel Studio 6.0/extensions/Atmel/AVRAssembler/2.1.51.64/avrassembler/avrasm2.exe"
+    "avra"))
 
-(defvar avra-flymake-command-arguments (list "-o" "/dev/null"))
+(defvar avr-asm-flymake-command-arguments
+  (if (eq window-system 'w32)
+      (list "-f-")
+    (list "-o" "/dev/null")))
 
-(defun avra-flymake-init ()
+(defun avr-asm-flymake-init ()
   (let* ((temp-file   (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
          (local-file  (file-relative-name temp-file (file-name-directory buffer-file-name))))
-    (list avra-flymake-command (append avra-flymake-command-arguments (list local-file)))))
+    (list avr-asm-flymake-command (append avr-asm-flymake-command-arguments (list local-file)))))
 
-(add-to-list 'flymake-allowed-file-name-masks '("\\.\\(asm\\|inc\\)\\'" avra-flymake-init))
+(add-to-list 'flymake-allowed-file-name-masks '("\\.\\(asm\\|inc\\)\\'" avr-asm-flymake-init))
 (add-to-list 'flymake-err-line-patterns '("^\\(.*\\)(\\([0-9]+\\))\\ +:\\ +Error\\ +:\\ +\\(.*\\)" 1 2 nil 3))
 
-(provide 'avra-flymake)
+(provide 'avr-asm-flymake)
 
-;;; avra-flymake.el ends here
+;;; avr-asm-flymake.el ends here
